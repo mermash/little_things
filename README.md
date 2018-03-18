@@ -1,2 +1,1 @@
-# little_things
-settings etc.
+some settings etc.

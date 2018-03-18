@@ -1,0 +1,50 @@
+mkdir /tmp/phpsource
+cd /tmp/phpsource
+wget http://us1.php.net/distributions/php-5.6.33.tar.xz
+tar xJvf php-5.6.33.tar.xz
+
+where
+
+x = extract,
+J = handle xz file format,
+v = verbose,
+f = file
+
+cd /tmp/phpsource/php-5.6.33/ext/pcntl
+phpize
+./configure
+make
+
+Если компиляция прошла успешно, то в папке ./modules мы найдем файл "pcntl.so". Этот файл необходимо скопировать в папку с модулями php.
+Она расположена внутри папки /usr/lib/php/ (найдите папку содержащие файлы с модулями (расширение .so)
+
+$ cp /tmp/phpsource/php-5.6.33/ext/pcntl/modules/pcntl.so /usr/lib/php/20131226/
+$ echo "extension=pcntl.so" > /etc/php/5.6/apache2/conf.d/pcntl.ini
+
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+after upgrade php from 5.5 to 5.6
+there was problem like that:
+
+PHP Startup: Unable to initialize module
+Module compiled with module  API=20121212
+PHP compiled with module  API=20131226
+
+#sudo dpkg --configure -a
+#sudo apt-get update
+###dpkg -l  - installed packages
+#sudo apt-get install php5.6-dev
+### to get phpize5.6, php-configure5.6 etc.
+### for compiling additional modules
+
+
+mkdir /tmp/php_source-5.6.34
+cd /tmp/php_source-5.6.34
+
+wget us1.php.net/get/php-5.6.34.tar.gz/from/this/mirror/
+
+cd php-5.6.34/ext/pcntl
+phpize5.6 && ./configure && make install
+echo "extension=pcntl.so" >> /etc/php/5.6/apache2/php.ini
+service apache2 restart
