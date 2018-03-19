@@ -44,6 +44,7 @@ cd /tmp/php_source-5.6.34
 
 wget us1.php.net/get/php-5.6.34.tar.gz/from/this/mirror/
 
+tar -zxvf php-5.6.34.tar.gz
 cd php-5.6.34/ext/pcntl
 phpize5.6 && ./configure && make install
 echo "extension=pcntl.so" >> /etc/php/5.6/apache2/php.ini
