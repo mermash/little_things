@@ -1,0 +1,11 @@
+Add to configuration file of apache
+(like /etc/apache2/apache2.conf)
+
+LoadModule status_module /usr/lib/apache2/modules/mod_status.so
+ExtendedStatus On
+
+<Location /server-status>
+SetHandler server-status
+Order Allow,Deny
+Allow from all
+</Location>
