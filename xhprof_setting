@@ -1,0 +1,111 @@
+http://php.net/xhprof
+
+pecl install xhprof-beta
+
+add to php.ini :
+
+[xhprof]
+extension=xhprof.so
+xhprof.output_dir="/tmp/xhprof"
+
+-----
+add utils xhprof to composer:
+
+composer require facebook/xhprof
+
+-----
+
+add in code:
+
+xhprof_enable( XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEM );
+
+//$application->run();
+
+$xhprof_data = xhprof_disable();
+
+$xhprof_runs = new XHProfRuns_Default();
+$run_id = $xhprof_runs->save_run($xhprof_data, 'my_application');
+
+----
+
+View:
+
+add virtual host for like nginx+apache
+
+for apache:
+
+create /etc/apache2/sites-available/xhprof.ru.local.conf
+
+
+
+<VirtualHost *:8088>
+    ServerName xhprof.ru.local
+    ServerAlias www.xhprof.ru.local
+    DocumentRoot /var/www/sometestproject.ru.local/vendor/facebook/xhprof/xhprof_html
+    ErrorLog /var/www/error.log
+    CustomLog /var/www/access.log combined
+    <Directory /var/www/sometestproject.ru.local/vendor/facebook/xhprof/xhprof_html>
+        AllowOverride All
+        Require all granted
+        Require all denied
+    </Directory>
+</VirtualHost>
+
+
+sudo a2ensite xhprof.ru.local
+sudo service apache2 reload
+sudo service apache2 restart
+
+--------
+
+for nginx:
+
+create /etc/nginx/sites-available/xhprof.ru.local
+
+server {
+
+    listen [::]:80;
+    listen *:80;
+    server_name xhprof.ru.local
+    root /var/www/sometestproject.ru.local/vendor/facebook/xhprof/xhprof_html
+
+    location / {
+        proxy_pass http://xhprof.ru.local:8088/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        #proxy_connect_timeout 3600;
+        #proxy_send_timeout 3600;
+        #proxy_read_timeout 3600;
+    }
+}
+
+sudo ln -s /etc/nginx/sites-available/xhprof.ru.local /etc/nginx/sites-enabled/xhprof.ru.local
+
+service nginx restart
+
+----
+
+add in /etc/hosts
+127.0.0.1 xhprof.ru.local
+192.168.56.2 xhprof.ru.local
+
+add in host OS with windows
+
+C:\Windows\System32\drivers\etc\hosts
+
+192.168.56.2   xhprof.ru.db0.ru
+
+------------
+browser : http://xhprof.ru.local
+
+-------------
+sudo apt-get install graphviz
+
+
+
+
+
+
+
+
