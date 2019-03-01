@@ -1,0 +1,39 @@
+install rabbitmq on ubuntu 16.04 xenial:
+
+https://websiteforstudents.com/installing-rabbitmq-with-erlang-otp-support-on-ubuntu-16-04-17-10-and-18-04/
+
+sudo sh -c 'echo "deb https://packages.erlang-solutions.com/ubuntu $(lsb_release -sc) contrib" >> /etc/apt/sources.list.d/erlang.list'
+
+wget https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+sudo apt-key add erlang_solutions.asc
+
+sudo apt update
+sudo apt install erlang
+
+sudo sh -c 'echo "deb https://dl.bintray.com/rabbitmq/debian $(lsb_release -sc) main" >> /etc/apt/sources.list.d/rabbitmq.list'
+
+wget -O- https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc | sudo apt-key add -
+wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | sudo apt-key add -
+
+sudo apt update
+sudo apt install rabbitmq-server
+
+sudo systemctl enable rabbitmq-server
+sudo systemctl start rabbitmq-server
+sudo systemctl stop rabbitmq-server
+
+sudo rabbitmq-plugins enable rabbitmq_management
+
+
+web console rabbitmq_manager (port 15672) from host OS (if you are using virtual machine):
+
+https://stackoverflow.com/questions/23669780/rabbitmq-3-3-1-can-not-login-with-guest-guest
+
+
+This is a new features since the version 3.3.0. You can only login using guest/guest on localhost.
+For logging from other machines or on ip you'll have to create users and assign the permissions. This can be done as follows:
+
+rabbitmqctl add_user test test
+rabbitmqctl set_user_tags test administrator
+rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
+
